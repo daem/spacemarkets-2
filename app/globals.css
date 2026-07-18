@@ -302,16 +302,23 @@
   .sm-animated [data-reveal] { opacity: 1 !important; animation: none !important; }
 }
 
+/* Nav logo variants: full wordmark on desktop, standalone mark on mobile
+   (swapped in the media block below). */
+.sm-logo-mark { display: none; }
+
 /* ── Mobile / small tablet ─────────────────────────────────────────────
    The page's styles are inline (ported 1:1 from the original), so
    responsive adjustments live here as class-scoped overrides — same
    pattern as the hover styles: !important so they beat inline styles,
    media-scoped so desktop stays untouched. */
 @media (max-width: 900px) {
-  /* Nav: logo + CTA only; the anchor links move to the footer's link columns */
+  /* Nav: logo + CTA only; the anchor links move to the footer's link columns.
+     The full wordmark swaps for the standalone mark (brand "mark light"). */
   .sm-nav { padding: 12px 20px !important; }
   .sm-nav-links { gap: 20px !important; }
   .sm-nav-links > a { display: none !important; }
+  .sm-logo-full { display: none !important; }
+  .sm-logo-mark { display: block !important; }
 
   /* Hero: globe centered behind the copy, tighter type and padding.
      The globe's satellite label divs overlap the copy at this size — hide them

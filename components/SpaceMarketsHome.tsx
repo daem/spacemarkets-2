@@ -199,7 +199,10 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
 
         {/* NAV */}
         <nav className="sm-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 60, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "14px 40px", borderBottom: `1px solid ${v.navBorder}`, background: v.navBg, backdropFilter: v.navBlur, WebkitBackdropFilter: v.navBlur, transition: "background 0.3s,border-color 0.3s" }}>
-          <a href="#top" aria-label="Space Markets — home" style={{ display: "inline-flex", alignItems: "center" }}><img src="/space-markets-logo.svg" alt="Space Markets" style={{ height: 22, width: "auto", display: "block" }} /></a>
+          <a href="#top" aria-label="Space Markets — home" style={{ display: "inline-flex", alignItems: "center" }}>
+            <img className="sm-logo-full" src="/space-markets-logo.svg" alt="Space Markets" style={{ height: 22, width: "auto", display: "block" }} />
+            <img className="sm-logo-mark" src="/mark-light@2x.png" alt="Space Markets" style={{ height: 26, width: "auto" }} />
+          </a>
           <div className="sm-nav-links" style={{ display: "flex", alignItems: "center", gap: 32 }}>
             <a href="#events" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>Markets</a>
             <a href="#markets" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>Leasing</a>
