@@ -97,9 +97,9 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
     const st = this.state;
     const P = "#23E6A8", R = "#FF4D5E";
     const BASE = [
-      { id: "m1", category: "Launch", question: "Vandenberg's Q4 launch window holds", prob: 74, resolves: "31 Dec '26", volume: "$214K", seed: 2 },
-      { id: "m2", category: "Deployment", question: "Compute constellation deploys on schedule", prob: 61, resolves: "18 Nov '26", volume: "$147K", seed: 3 },
-      { id: "m3", category: "Capacity", question: "Ka-band capacity opens before H1 2027", prob: 68, resolves: "30 Jun '27", volume: "$98K", seed: 4 },
+      { id: "m1", category: "Launch", question: "Will Starship deploy an operational payload into orbit by Dec. 31, 2026?", prob: 64, resolves: "Dec. 31, 2026", volume: "$214K", seed: 2 },
+      { id: "m2", category: "Orbital compute", question: "Will Starcloud-2 begin operating an orbital GPU compute service by June 30, 2027?", prob: 57, resolves: "June 30, 2027", volume: "$147K", seed: 3 },
+      { id: "m3", category: "Lunar", question: "Will Blue Ghost Mission 2 successfully land on the Moon by June 30, 2027?", prob: 71, resolves: "June 30, 2027", volume: "$98K", seed: 4 },
     ];
     const markets = BASE.map((b, i) => {
       const prob = Math.max(3, Math.min(97, b.prob + st.jitter[i]));
@@ -164,11 +164,16 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
       filmCaption: videoSrc ? "Play the film" : "Promotional film — final cut pending",
       playFilm: () => { if (videoSrc) this.setState({ videoPlaying: true }); },
       markets,
-      tape: [1, 2].flatMap((n) => ["Planet", "Aalyria", "Star Catcher", "Coinbase"].map((name) => ({ name: name + " ", key: n + name }))).map((t) => ({ name: t.name })),
       capacity: [
         { index: "01", name: "Launch & transport", meta: "Slots · downmass" },
         { index: "02", name: "Communications", meta: "Bandwidth · ground access" },
         { index: "03", name: "Compute & power", meta: "Reserved capacity" },
+      ],
+      agents: [
+        { index: "01", title: "Discover capacity", line: "Search available infrastructure, compare terms and identify services required for a mission." },
+        { index: "02", title: "Price and manage risk", line: "Monitor event probabilities and propose hedges against delays, failures and capacity constraints." },
+        { index: "03", title: "Assemble mission packages", line: "Combine communications, power, compute, mobility and other services into executable workflows." },
+        { index: "04", title: "Coordinate settlement", line: "Monitor delivery conditions and initiate payments as contracted services are verified." },
       ],
       smiValue: cur.display, smiDelta: cur.delta,
       smiTicker: active ? active.key : "SMI",
@@ -184,6 +189,13 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
         { index: "03", role: "Capital partners", line: "Price and hedge event risk." },
         { index: "04", role: "Builders", line: "Integrate the market layer." },
       ],
+      // Placeholder roster — swap for the real team before launch.
+      team: [
+        { index: "01", name: "Ada Chen", role: "Co-founder · CEO", line: "Previously built settlement infrastructure at a major exchange." },
+        { index: "02", name: "Marcus Osei", role: "Co-founder · CTO", line: "Led flight software and ground systems for smallsat constellations." },
+        { index: "03", name: "Yuki Tanaka", role: "Head of Markets", line: "Designed event-market products across crypto and commodities." },
+        { index: "04", name: "Priya Raman", role: "Head of Partnerships", line: "A decade brokering launch and capacity deals across the industry." },
+      ],
       faqs: FAQS.map((f, i) => ({
         ...f, open: st.faqOpen === i,
         iconTransform: st.faqOpen === i ? "rotate(45deg)" : "rotate(0deg)",
@@ -198,17 +210,19 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
       <div ref={this._root} style={{ background: "#03070B", minHeight: "100vh" }}>
 
         {/* NAV */}
-        <nav className="sm-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 60, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "14px 40px", borderBottom: `1px solid ${v.navBorder}`, background: v.navBg, backdropFilter: v.navBlur, WebkitBackdropFilter: v.navBlur, transition: "background 0.3s,border-color 0.3s" }}>
-          <a href="#top" aria-label="Space Markets — home" style={{ display: "inline-flex", alignItems: "center" }}>
-            <img className="sm-logo-full" src="/space-markets-logo.svg" alt="Space Markets" style={{ height: 22, width: "auto", display: "block" }} />
-            <img className="sm-logo-mark" src="/mark-light@2x.png" alt="Space Markets" style={{ height: 26, width: "auto" }} />
-          </a>
-          <div className="sm-nav-links" style={{ display: "flex", alignItems: "center", gap: 32 }}>
-            <a href="#events" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>Markets</a>
-            <a href="#markets" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>Leasing</a>
-            <a href="#smi" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>SMI</a>
-            <a href="#infrastructure" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>Participants</a>
-            <button type="button" onClick={v.openContact} className="sm-hover-bright" style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "none", borderRadius: 999, background: "#0B6BFF", color: "#F5F8FF", fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 500, padding: "10px 20px", minHeight: 44, cursor: "pointer", boxShadow: "0 0 28px rgba(11,107,255,0.35)", transition: "filter 0.2s" }}>Request access <span aria-hidden="true" style={{ fontSize: 14 }}>↗</span></button>
+        <nav className="sm-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 60, padding: "14px 40px", borderBottom: `1px solid ${v.navBorder}`, background: v.navBg, backdropFilter: v.navBlur, WebkitBackdropFilter: v.navBlur, transition: "background 0.3s,border-color 0.3s" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+            <a href="#top" aria-label="Space Markets — home" style={{ display: "inline-flex", alignItems: "center" }}>
+              <img className="sm-logo-full" src="/space-markets-logo.svg" alt="Space Markets" style={{ height: 28, width: "auto", display: "block" }} />
+              <img className="sm-logo-mark" src="/mark-light@2x.png" alt="Space Markets" style={{ height: 30, width: "auto" }} />
+            </a>
+            <div className="sm-nav-links" style={{ display: "flex", alignItems: "center", gap: 32 }}>
+              <a href="#events" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>Markets</a>
+              <a href="#markets" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>Leasing</a>
+              <a href="#smi" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>SMI</a>
+              <a href="#infrastructure" className="sm-hover-light" style={{ fontSize: 13, color: "#8E99AA" }}>Participants</a>
+              <button type="button" onClick={v.openContact} className="sm-hover-bright" style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "none", borderRadius: 999, background: "#0B6BFF", color: "#F5F8FF", fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 500, padding: "10px 20px", minHeight: 44, cursor: "pointer", boxShadow: "0 0 28px rgba(11,107,255,0.35)", transition: "filter 0.2s" }}>Request access <span aria-hidden="true" style={{ fontSize: 14 }}>↗</span></button>
+            </div>
           </div>
         </nav>
 
@@ -223,14 +237,14 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
             <div style={{ maxWidth: 640, display: "flex", flexDirection: "column", alignItems: "flex-start", animation: "sm-rise 0.7s ease-out both" }}>
 
               <h1 className="sm-hero-h1" style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 400, fontSize: "clamp(52px,6.6vw,104px)", lineHeight: 0.98, letterSpacing: "-0.02em", color: "#F5F8FF" }}>Markets for<br /><span style={{ background: "linear-gradient(to right,#20D9FF,#0B6BFF)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", display: "inline-block", paddingBottom: "0.06em" }}>Orbital<br />Infrastructure</span></h1>
-              <p style={{ margin: "24px 0 0", maxWidth: "44ch", fontSize: 18, lineHeight: 1.65, color: "#8E99AA", textWrap: "pretty" }}>Register, lease, and stream revenue from commercial space infrastructure through programmable settlement rails.</p>
+              <p style={{ margin: "24px 0 0", maxWidth: "44ch", fontSize: 18, lineHeight: 1.65, color: "#8E99AA", textWrap: "pretty" }}>Price mission risk. Buy and sell orbital capacity. Settle when delivery is verified.</p>
               <div className="sm-hero-ctas" style={{ display: "flex", alignItems: "center", gap: 32, marginTop: 36, pointerEvents: "auto" }}>
                 <a href="#events" className="sm-hover-bright-light" style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 999, background: "#0B6BFF", color: "#F5F8FF", fontSize: 14, fontWeight: 500, padding: "13px 26px", minHeight: 44, boxSizing: "border-box", boxShadow: "0 0 28px rgba(11,107,255,0.35)", transition: "filter 0.2s" }}>Explore markets <span aria-hidden="true">↗</span></a>
                 <button type="button" onClick={v.openContact} className="sm-hover-cyan" style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "none", background: "none", padding: 0, minHeight: 44, fontFamily: "'Inter',sans-serif", fontSize: 14, fontWeight: 500, color: "rgba(245,248,255,0.9)", cursor: "pointer", transition: "color 0.2s" }}>Request access <span aria-hidden="true" style={{ transition: "transform 0.2s" }}>→</span></button>
               </div>
               <div className="sm-hero-backed" style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 44, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.1)", minWidth: 340 }}>
-                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Backed by</span>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 10, fontFamily: "'Space Grotesk',sans-serif", fontSize: 19, fontWeight: 400, letterSpacing: "-0.02em", color: "#F5F8FF" }}><span aria-hidden="true" style={{ display: "inline-block", width: 17, height: 17, borderRadius: "50%", background: "#0B6BFF" }}></span>Coinbase Ventures</span>
+                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Backed by</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 10, fontFamily: "'Space Grotesk',sans-serif", fontSize: 24, fontWeight: 400, letterSpacing: "-0.02em", color: "#F5F8FF" }}><span aria-hidden="true" style={{ display: "inline-block", width: 21, height: 21, borderRadius: "50%", background: "#0B6BFF" }}></span>Coinbase Ventures</span>
               </div>
             </div>
             <p className="sm-hero-caption" style={{ position: "absolute", left: 40, bottom: 44, margin: 0, maxWidth: 340, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", lineHeight: 1.8, color: "#8E99AA" }}>ALT 550 KM — Orbit is now a place of business. Image: NASA.</p>
@@ -240,12 +254,12 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
         </section>
 
         {/* PLATE 01 — THE FILM */}
-        <section id="film" data-screen-label="Film" className="sm-pad-x" style={{ position: "relative", marginTop: "clamp(64px,7vw,80px)", padding: "0 40px" }}>
+        <section id="film" data-screen-label="Film" className="sm-pad-x" style={{ position: "relative", marginTop: "clamp(96px,10vw,120px)", padding: "0 40px" }}>
           <div data-reveal style={{ maxWidth: 1200, margin: "0 auto" }}>
             <div className="sm-film-head" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, marginBottom: 28 }}>
               <div>
                 <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 01 — The Film</p>
-                <h2 style={{ margin: "20px 0 0", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: "clamp(34px,3.6vw,52px)", lineHeight: 1.02, letterSpacing: "-0.03em", color: "#F5F8FF" }}>Orbit, in ninety seconds.</h2>
+                <h2 style={{ margin: "20px 0 0", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: "clamp(34px,3.6vw,52px)", lineHeight: 1.02, letterSpacing: "-0.03em", color: "#F5F8FF" }}>Orbit, in thirty-four seconds.</h2>
               </div>
               <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8E99AA" }}>SPACE MARKETS — A FILM · 2026</p>
             </div>
@@ -261,31 +275,14 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
                 <span aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(3,7,11,0.85),rgba(3,7,11,0.15) 45%,rgba(3,7,11,0.35))" }}></span>
                 <span className="sm-hover-play" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 88, height: 88, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.35)", background: "rgba(3,7,11,0.55)", backdropFilter: "blur(8px)", transition: "background 0.2s,border-color 0.2s" }}><span aria-hidden="true" style={{ width: 0, height: 0, borderStyle: "solid", borderWidth: "11px 0 11px 19px", borderColor: "transparent transparent transparent #F5F8FF", marginLeft: 5 }}></span></span>
                 <span style={{ position: "absolute", left: 28, bottom: 24, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(245,248,255,0.9)" }}>{v.filmCaption}</span>
-                <span style={{ position: "absolute", right: 28, bottom: 24, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8E99AA" }}>01:32 · Sound on</span>
+                <span style={{ position: "absolute", right: 28, bottom: 24, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8E99AA" }}>00:34 · Sound on</span>
               </button>
             )}
           </div>
         </section>
 
-        {/* BACKED BY / MARKET LANDSCAPE STRIP */}
-        <section data-screen-label="Backed by" className="sm-pad-x" style={{ marginTop: "clamp(64px,7vw,80px)", padding: "0 40px" }}>
-          <div data-reveal style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", gap: "clamp(24px,3vw,40px)", borderTop: "1px solid rgba(255,255,255,0.1)", borderBottom: "1px solid rgba(255,255,255,0.1)", padding: "24px 8px" }}>
-            <p style={{ margin: 0, flexShrink: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA", whiteSpace: "nowrap" }}>Market landscape</p>
-            <div style={{ flex: 1, minWidth: 0, overflow: "hidden", WebkitMaskImage: "linear-gradient(to right,transparent 0%,black 5%,black 95%,transparent 100%)", maskImage: "linear-gradient(to right,transparent 0%,black 5%,black 95%,transparent 100%)" }}>
-              <div style={{ display: "flex", width: "max-content", animation: "sm-tape 36s linear infinite" }}>
-                {v.tape.map((t, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: "clamp(24px,3vw,44px)", paddingRight: "clamp(24px,3vw,44px)" }}>
-                    <p style={{ margin: 0, whiteSpace: "nowrap", fontFamily: "'Space Grotesk',sans-serif", fontSize: 20, fontWeight: 500, letterSpacing: "-0.025em", color: "rgba(245,248,255,0.6)" }}>{t.name}</p>
-                    <span aria-hidden="true" style={{ width: 4, height: 4, flexShrink: 0, borderRadius: "50%", background: "rgba(32,217,255,0.6)" }}></span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* PLATE 02 — EVENT MARKETS */}
-        <section id="events" data-screen-label="Event Markets" style={{ position: "relative", marginTop: "clamp(64px,7vw,80px)", overflow: "hidden" }}>
+        <section id="events" data-screen-label="Event Markets" style={{ position: "relative", marginTop: "clamp(96px,10vw,120px)", overflow: "hidden" }}>
           <img src="/event-markets-bg.jpg" alt="A satellite deploying above Earth" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", zIndex: 0 }} />
           <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to right,rgba(3,7,11,0.95),rgba(3,7,11,0.6) 50%,rgba(3,7,11,0.35))" }}></div>
           <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(to bottom,rgba(3,7,11,0.5),transparent 30%,rgba(3,7,11,0.92) 85%,#03070B)" }}></div>
@@ -334,7 +331,7 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
         </section>
 
         {/* PLATE 03 — ASSET LEASING */}
-        <section id="markets" data-screen-label="Asset Leasing" className="sm-pad-x" style={{ marginTop: "clamp(64px,7vw,80px)", padding: "0 40px" }}>
+        <section id="markets" data-screen-label="Asset Leasing" className="sm-pad-x" style={{ marginTop: "clamp(96px,10vw,120px)", padding: "0 40px" }}>
           <div className="sm-leasing-grid" style={{ maxWidth: 1280, margin: "0 auto", display: "grid", gridTemplateColumns: "0.95fr 1.05fr", alignItems: "center", gap: 48 }}>
             <div data-reveal>
               <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 03 — Asset Leasing Markets</p>
@@ -371,8 +368,28 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
           </div>
         </section>
 
-        {/* PLATE 04 — SMI */}
-        <section id="smi" data-screen-label="SMI" style={{ position: "relative", marginTop: "clamp(64px,7vw,80px)", overflow: "hidden" }}>
+        {/* PLATE 04 — AGENTS */}
+        <section id="agents" data-screen-label="Agents" className="sm-pad-x" style={{ marginTop: "clamp(96px,10vw,120px)", padding: "0 40px" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+            <div data-reveal>
+              <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 04 — Built for Agents</p>
+              <h2 style={{ margin: "20px 0 0", maxWidth: "15ch", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: "clamp(38px,4.3vw,58px)", lineHeight: 0.98, letterSpacing: "-0.04em", color: "#F5F8FF" }}>Markets built for agents.</h2>
+              <p style={{ margin: "24px 0 0", maxWidth: "62ch", fontSize: 17, lineHeight: 1.65, color: "#8E99AA", textWrap: "pretty" }}>Space Markets enables specialized agents to discover infrastructure capacity, evaluate mission risk, submit bids, assemble service packages and coordinate programmable settlement. Agents operate under participant-defined mandates, connecting market intelligence with real economic activity across launch, communications, compute, power and lunar operations.</p>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 20, marginTop: 40 }}>
+              {v.agents.map((a, i) => (
+                <div key={a.index} data-reveal className="sm-hover-card" style={{ display: "flex", flexDirection: "column", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, background: "rgba(3,7,11,0.78)", padding: "22px 22px 24px", transition: "border-color 0.2s,background 0.2s", animationDelay: `${i * 0.1}s` }}>
+                  <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.1em", color: "#8E99AA" }}>{a.index}</p>
+                  <h3 style={{ margin: "18px 0 0", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: 22, letterSpacing: "-0.02em", color: "#F5F8FF" }}>{a.title}</h3>
+                  <p style={{ margin: "10px 0 0", fontSize: 14, lineHeight: 1.6, color: "#8E99AA", textWrap: "pretty" }}>{a.line}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PLATE 05 — SMI */}
+        <section id="smi" data-screen-label="SMI" style={{ position: "relative", marginTop: "clamp(96px,10vw,120px)", overflow: "hidden" }}>
           <div className="sm-smi-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 760 }}>
             <div data-reveal className="sm-smi-orb-col" style={{ position: "relative" }}>
               <div style={{ position: "absolute", left: "-80%", top: "50%", transform: "translateY(-50%)", width: "150%", aspectRatio: "1" }}>
@@ -387,7 +404,7 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
             </div>
             <div className="sm-smi-content" style={{ position: "relative", padding: "clamp(64px,7vw,96px) 80px clamp(64px,7vw,96px) 24px" }}>
               <div data-reveal style={{ maxWidth: 640, animationDelay: "0.1s" }}>
-                <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 04 — Benchmark Intelligence</p>
+                <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 05 — Benchmark Intelligence</p>
                 <h2 style={{ margin: "32px 0 0", maxWidth: "15ch", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 400, fontSize: "clamp(30px,3.4vw,48px)", lineHeight: 1.05, letterSpacing: "-0.02em", color: "#F5F8FF" }}>Benchmark intelligence for orbital capacity.</h2>
                 <p className="sm-smi-value" style={{ margin: "40px 0 0", whiteSpace: "nowrap", fontFamily: "'JetBrains Mono',monospace", fontWeight: 500, fontSize: "clamp(88px,9vw,148px)", lineHeight: 1, letterSpacing: "-0.055em", color: "#F5F8FF", fontVariantNumeric: "tabular-nums" }}>{v.smiValue}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16 }}>
@@ -420,13 +437,13 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
           </div>
         </section>
 
-        {/* PLATE 05 — PARTICIPANTS */}
-        <section id="infrastructure" data-screen-label="Participants" style={{ marginTop: "clamp(64px,7vw,80px)", overflow: "hidden" }}>
+        {/* PLATE 06 — PARTICIPANTS */}
+        <section id="infrastructure" data-screen-label="Participants" style={{ marginTop: "clamp(96px,10vw,120px)", overflow: "hidden" }}>
           <div style={{ position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "60svh" }}>
             <img src="/participants-iss.jpg" alt="Copper-toned solar arrays of the International Space Station above a darkened night ocean" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
             <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom,rgba(3,7,11,0.45),transparent 40%,#03070B)" }}></div>
             <div data-reveal className="sm-part-top" style={{ position: "relative", maxWidth: 1280, margin: "0 auto", width: "100%", padding: "110px 40px 0", boxSizing: "border-box" }}>
-              <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", backdropFilter: "blur(4px)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 05 — Who It's For</p>
+              <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", backdropFilter: "blur(4px)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 06 — Who It's For</p>
             </div>
             <div data-reveal className="sm-part-h2" style={{ position: "relative", maxWidth: 1280, margin: "0 auto", width: "100%", padding: "0 40px 60px", boxSizing: "border-box" }}>
               <h2 style={{ margin: 0, maxWidth: "13ch", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: "clamp(44px,6vw,82px)", lineHeight: 0.98, letterSpacing: "-0.04em", color: "#F5F8FF" }}>Built for the orbital economy.</h2>
@@ -440,6 +457,33 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
                   <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: "#8E99AA" }}>{r.index}</span>
                   <h3 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: 24, letterSpacing: "-0.02em", color: "#F5F8FF" }}>{r.role}</h3>
                   <p className="sm-role-line" style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "#8E99AA" }}>{r.line}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PLATE 07 — TEAM */}
+        <section id="team" data-screen-label="Team" className="sm-pad-x" style={{ marginTop: "clamp(96px,10vw,120px)", padding: "0 40px" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+            <div data-reveal>
+              <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 07 — Who's Building It</p>
+              <h2 style={{ margin: "20px 0 0", maxWidth: "15ch", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: "clamp(38px,4.3vw,58px)", lineHeight: 0.98, letterSpacing: "-0.04em", color: "#F5F8FF" }}>The people behind the markets.</h2>
+              <p style={{ margin: "24px 0 0", maxWidth: "46ch", fontSize: 17, lineHeight: 1.65, color: "#8E99AA", textWrap: "pretty" }}>Operators, market designers, and engineers from across the space and crypto economies.</p>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 20, marginTop: 40 }}>
+              {v.team.map((p, i) => (
+                <div key={p.index} data-reveal className="sm-hover-card" style={{ display: "flex", flexDirection: "column", overflow: "hidden", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, background: "rgba(3,7,11,0.78)", transition: "border-color 0.2s,background 0.2s", animationDelay: `${i * 0.1}s` }}>
+                  <div style={{ position: "relative", aspectRatio: "4/5", background: "#071421", overflow: "hidden" }}>
+                    <img src="/team-placeholder.svg" alt="Placeholder team portrait" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1)", transform: i % 2 ? "scaleX(-1)" : "none" }} />
+                    <span aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(3,7,11,0.9),rgba(3,7,11,0.15) 45%,rgba(11,107,255,0.10))" }}></span>
+                    <span style={{ position: "absolute", left: 16, top: 14, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#8E99AA" }}>{p.index}</span>
+                  </div>
+                  <div style={{ padding: "18px 20px 22px" }}>
+                    <h3 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: 22, letterSpacing: "-0.02em", color: "#F5F8FF" }}>{p.name}</h3>
+                    <p style={{ margin: "6px 0 0", fontFamily: "'JetBrains Mono',monospace", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8E99AA" }}>{p.role}</p>
+                    <p style={{ margin: "12px 0 0", fontSize: 14, lineHeight: 1.6, color: "#8E99AA", textWrap: "pretty" }}>{p.line}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -469,13 +513,13 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
           </div>
         </section>
 
-        {/* PLATE 06 — FINAL CTA */}
-        <section id="request-access" data-screen-label="Final CTA" className="sm-pad-x" style={{ marginTop: "clamp(64px,7vw,80px)", padding: "0 40px" }}>
+        {/* PLATE 08 — FINAL CTA */}
+        <section id="request-access" data-screen-label="Final CTA" className="sm-pad-x" style={{ marginTop: "clamp(96px,10vw,120px)", padding: "0 40px" }}>
           <div data-reveal className="sm-cta-card" style={{ position: "relative", maxWidth: 1152, margin: "0 auto", overflow: "hidden", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)", padding: "80px 64px", textAlign: "center" }}>
             <img src="/cta-twilight.jpg" alt="Earth's blue atmosphere at twilight with a crescent moon above the limb" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 34%" }} />
             <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom,rgba(3,7,11,0.95),rgba(3,7,11,0.75) 50%,rgba(3,7,11,0.25))" }}></div>
             <div style={{ position: "relative", maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
-              <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", backdropFilter: "blur(4px)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 06 — Private Beta</p>
+              <p style={{ display: "inline-flex", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 999, background: "rgba(3,7,11,0.7)", backdropFilter: "blur(4px)", padding: "8px 14px", margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#8E99AA" }}>Plate 08 — Private Beta</p>
               <h2 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 300, fontSize: "clamp(36px,5vw,58px)", lineHeight: 1.02, letterSpacing: "-0.02em", color: "#F5F8FF" }}>Join the private beta.</h2>
               <p style={{ margin: 0, maxWidth: "52ch", fontSize: 17, lineHeight: 1.65, color: "#8E99AA" }}>We're inviting operators, buyers, and builders shaping the orbital economy.</p>
               <button type="button" onClick={v.openContact} className="sm-hover-bright" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 8, border: "none", borderRadius: 999, background: "#0B6BFF", color: "#F5F8FF", fontFamily: "'Inter',sans-serif", fontSize: 14, fontWeight: 500, padding: "13px 26px", minHeight: 44, cursor: "pointer", boxShadow: "0 0 28px rgba(11,107,255,0.35)", transition: "filter 0.2s" }}>Request access <span aria-hidden="true">↗</span></button>
@@ -484,7 +528,7 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
         </section>
 
         {/* FOOTER */}
-        <footer className="sm-footer" style={{ marginTop: "clamp(64px,7vw,80px)", borderTop: "1px solid rgba(255,255,255,0.1)", padding: "48px 40px 64px" }}>
+        <footer className="sm-footer" style={{ marginTop: "clamp(96px,10vw,120px)", borderTop: "1px solid rgba(255,255,255,0.1)", padding: "48px 40px 64px" }}>
           <div data-reveal style={{ maxWidth: 1152, margin: "0 auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 40, flexWrap: "wrap" }}>
               <div>
@@ -513,7 +557,7 @@ export default class SpaceMarketsHome extends React.Component<Props, State> {
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap", marginTop: 48 }}>
               <p style={{ margin: 0, fontSize: 12, color: "#8E99AA" }}>© 2026 Space Markets. All rights reserved.</p>
-              <a href="https://x.com/spacemarkets" target="_blank" rel="noopener noreferrer" className="sm-hover-light" style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, fontSize: 12, color: "#8E99AA" }}><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ width: 16, height: 16 }}><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z"></path></svg>Follow Space Markets on X</a>
+              <a href="https://x.com/SpaceMarketsHQ" target="_blank" rel="noopener noreferrer" className="sm-hover-light" style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, fontSize: 12, color: "#8E99AA" }}><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ width: 16, height: 16 }}><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z"></path></svg>Follow Space Markets on X</a>
             </div>
             <span id="disclosures" aria-hidden="true"></span>
           </div>

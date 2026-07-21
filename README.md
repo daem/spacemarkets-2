@@ -1,8 +1,10 @@
 # Space Markets
 
-Next.js port of the SpaceMarkets home page. The page is a 1:1 conversion of
-`SpaceMarkets Home (1).html` (the original bundled export, kept in the repo
-root as the reference) — same markup, styles, content, and behavior.
+Next.js port of the SpaceMarkets home page. The page started as a 1:1
+conversion of `SpaceMarkets Home (1).html` (the original bundled export, kept
+in the repo root as a historical reference) and has since evolved past it —
+copy, sections, and layout now follow ongoing stakeholder feedback, so the
+export no longer matches the live page.
 
 ## Run
 

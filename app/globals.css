@@ -271,7 +271,6 @@
     a:hover { color: #20D9FF; }
     @keyframes sm-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
     @keyframes sm-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes sm-tape { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   
 /* Hover/focus styles. In the original these were `style-hover` / `style-focus`
    attributes compiled into pseudo-classes whose declarations carry !important
@@ -329,7 +328,7 @@
   .sm-hero-content { padding: 100px 24px 150px !important; }
   .sm-hero-h1 { font-size: clamp(38px, 11vw, 52px) !important; }
   .sm-hero-ctas { flex-wrap: wrap !important; gap: 16px 24px !important; }
-  .sm-hero-backed { min-width: 0 !important; }
+  .sm-hero-backed { min-width: 0 !important; flex-wrap: wrap !important; }
   .sm-hero-caption { left: 24px !important; bottom: 24px !important; max-width: 240px !important; }
   .sm-hero-scroll { display: none !important; }
 
